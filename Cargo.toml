@@ -1,0 +1,32 @@
+[package]
+name = "env-gen"
+version = "0.1.0"
+edition = "2024"
+description = "A lightweight utility for generating and managing environment variable files (.env) from the command line."
+categories = ["command-line-utilities", "config"]
+keywords = [
+  "env",
+  "dotenv",
+  "environment",
+  "config",
+  "generator"
+]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/brysonbw/env-gen"
+repository = "https://github.com/brysonbw/env-gen"
+authors = ["Bryson Ward"]
+documentation = "https://docs.rs/env-gen"
+include = ["src/**/*.rs", "README.md", "LICENSE"]
+
+[dependencies]
+chroma-print = "1.0.0"
+dialoguer = "0.12.0"
+
+[profile.test]
+opt-level = 1
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true

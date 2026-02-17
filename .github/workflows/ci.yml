@@ -1,0 +1,53 @@
+name: CI
+
+on:
+    push:
+        branches: ["**"]
+    pull_request:
+        branches: ["**"]
+
+permissions:
+    contents: read
+
+env:
+    CARGO_TERM_COLOR: always
+    # Speed up compilation by ensuring we don't build debug info for dependencies
+    CARGO_INCREMENTAL: 0
+
+jobs:
+    # Merging check, fmt, and clippy into one 'lint' job can save runner minutes, but keeping them separate (as below) is better for parallel speed
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install Rust
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+            - name: Run tests
+              run: cargo test
+
+    fmt:
+        name: Rustfmt
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install Rust
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+              with:
+                  components: rustfmt
+            - name: Enforce formatting
+              run: cargo fmt --check
+
+    clippy:
+        name: Clippy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install Rust
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+              with:
+                  components: clippy
+            - name: Linting
+              # Using --all-targets ensures clippy checks tests and examples too
+              # Skipping clippy::needless_return to avoid false positives in test code
+              run: cargo clippy --all-targets -- -D warnings -A clippy::needless_return
