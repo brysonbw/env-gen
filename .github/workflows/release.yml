@@ -1,9 +1,17 @@
 name: Release PR
 
 on:
-    push:
-        branches:
-            - main
+    workflow_dispatch:
+        inputs:
+            release-type:
+                description: "Select the type of release"
+                required: true
+                default: "minor"
+                type: choice
+                options:
+                    - major
+                    - minor
+                    - patch
 
 permissions:
     contents: write
@@ -13,6 +21,10 @@ jobs:
     release-please:
         runs-on: ubuntu-latest
         steps:
-            - uses: googleapis/release-please-action@v4
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Create Release PR
+              uses: googleapis/release-please-action@v4
               with:
-                  release-type: rust
+                  release-type: ${{ github.event.inputs.release-type }}
