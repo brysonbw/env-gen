@@ -2,15 +2,58 @@ name: Release PR
 
 on:
     workflow_dispatch:
+        inputs:
+            release-type:
+                description: "Release type"
+                required: true
+                default: "minor"
+                type: choice
+                options:
+                    - major
+                    - minor
+                    - patch
 
 permissions:
     contents: write
     pull-requests: write
 
 jobs:
-    release-please:
+    release:
         runs-on: ubuntu-latest
         steps:
-            - uses: googleapis/release-please-action@v4
+            - uses: actions/checkout@v6
               with:
-                  release-type: rust
+                  fetch-depth: 0
+            - name: git config
+              run: |
+                  git config user.name "${GITHUB_ACTOR}"
+                  git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+            - uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  override: true
+
+            - run: cargo install cargo-release
+
+            - name: Create release branch
+              run: |
+                  BRANCH="release-${{ github.event.inputs.release-type }}-$(date +%Y%m%d%H%M%S)"
+                  echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+                  git checkout -b $BRANCH
+
+            - name: Bump version
+              run: cargo release ${{ github.event.inputs.release-type }} --no-publish --execute
+
+            - name: Push release branch
+              run: |
+                  git push origin $BRANCH
+
+            - name: Create PR
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "chore: bump version for ${{ github.event.inputs.release-type }} release"
+                  branch: $BRANCH
+                  title: "chore(release): version ${{ github.event.inputs.release-type }}"
+                  base: main
