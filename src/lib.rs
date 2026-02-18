@@ -1,4 +1,4 @@
-//! > **A lightweight utility for generating and managing environment variable files (.env) from the command line.**
+//! > **A command line tool for generating an environment variable file.**
 //!
 //! ## Install
 //! ```console

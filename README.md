@@ -1,6 +1,6 @@
 # Env Generator
 
-A lightweight utility for generating and managing environment variable files (.env) from the command line.
+A command line tool for generating an environment variable file.
 
 [![Crates.io](https://img.shields.io/crates/v/env-gen?style=flat)](https://crates.io/crates/env-gen)
 [![Crates.io](https://img.shields.io/crates/d/env-gen?style=flat)](https://crates.io/crates/env-gen)

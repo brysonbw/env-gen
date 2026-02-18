@@ -2,14 +2,15 @@
 name = "env-gen"
 version = "0.1.0"
 edition = "2024"
-description = "A lightweight utility for generating and managing environment variable files (.env) from the command line."
+description = "A command line tool for generating an environment variable file."
 categories = ["command-line-utilities", "config"]
 keywords = [
   "env",
   "dotenv",
   "environment",
   "config",
-  "generator"
+  "generator",
+  "cli"
 ]
 license = "MIT"
 readme = "README.md"
