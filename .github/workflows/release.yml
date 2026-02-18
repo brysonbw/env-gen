@@ -45,15 +45,11 @@ jobs:
             - name: Bump version
               run: cargo release ${{ github.event.inputs.release-type }} --no-publish --execute
 
-            - name: Push release branch
-              run: |
-                  git push origin $BRANCH
-
             - name: Create PR
               uses: peter-evans/create-pull-request@v5
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: "chore: bump version for ${{ github.event.inputs.release-type }} release"
+                  commit-message: "chore(release): bump version for ${{ github.event.inputs.release-type }} release"
                   branch: $BRANCH
                   title: "chore(release): version ${{ github.event.inputs.release-type }}"
                   base: main
